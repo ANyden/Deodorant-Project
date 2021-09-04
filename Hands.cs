@@ -12,9 +12,10 @@ public class Hands : MonoBehaviour
     public bool stickRight;
     public bool armUpR;
     private bool isArmUpNow;
-
+    public Quaternion armDownRotation;
     void Start()
     {
+        armDownRotation.x = rightShoulder.transform.rotation.eulerAngles.x;
         stickRight = false; //Nothing is held in the right hand on game start
         armUpR = false; //Arm is down on game start
     }
@@ -72,7 +73,7 @@ public class Hands : MonoBehaviour
 
     void dropArmR()
     {
-        rightShoulder.transform.localRotation = Quaternion.Euler(0, 0, 0);
+        rightShoulder.transform.localRotation = Quaternion.Euler(armDownRotation.x, 0, 0);
         armUpR = false;
     }
 }
