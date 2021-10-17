@@ -7,6 +7,7 @@ public class RaycastSelector : MonoBehaviour
     public RaycastHit hitadeoderant;
     public SelectionManager SelectionManager;
     public Hands player;
+    public bool activeInPhase;
     void Start()
     {
         
@@ -14,7 +15,10 @@ public class RaycastSelector : MonoBehaviour
 
     void FixedUpdate()
     {
-        SelectionLaser();
+        if (activeInPhase)
+        {
+            SelectionLaser();
+        }
     }
 
     public void SelectionLaser()

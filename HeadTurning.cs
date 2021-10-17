@@ -8,8 +8,6 @@ using UnityEngine.UI;
 
 public class HeadTurning : MonoBehaviour
 {
-
-
     public float lookSpeed = 200f;
 
     private float rotY = 0.0f;
@@ -17,19 +15,19 @@ public class HeadTurning : MonoBehaviour
 
     private float clampAngle = 90.0f;
 
-    public bool cursorLock;
+    public bool cursorLockedToCenterScreen;
+    public bool activeInPhase;
     //private bool lookLock;
 
     //public bool playerIsLooking;
-
 
     void Start()
     {
         //SelectionManager = SelectionManager.GetComponent<SelectionManager>();
 
         //playerIsLooking = true;
-        cursorLock = false;
-        Debug.LogWarning("cursorLock is " + cursorLock);
+        cursorLockedToCenterScreen = true;
+        Debug.LogWarning("cursorLock is " + cursorLockedToCenterScreen);
         //lookLock = false;
 
         Vector3 rot = transform.localRotation.eulerAngles;
@@ -39,8 +37,17 @@ public class HeadTurning : MonoBehaviour
 
     void Update()
     {
-        if (!cursorLock)
+        //when cursorLocked is true, the player can turn their head and look around using the mouse.
+        if (cursorLockedToCenterScreen)
         {
+            //playerCanTurnHead = true;
+            Cursor.lockState = CursorLockMode.Locked;
+
+        }
+        //Allows the player to turn their head and look around.
+        if (activeInPhase)
+        {
+            //print("HEAD TURNING ON");
             float mouseX = Input.GetAxis("Mouse X") * lookSpeed * Time.deltaTime;
             float mouseY = -Input.GetAxis("Mouse Y") * lookSpeed * Time.deltaTime;
 
@@ -53,7 +60,6 @@ public class HeadTurning : MonoBehaviour
             Quaternion localRotation = Quaternion.Euler(rotX, rotY, 0.0f);
             transform.rotation = localRotation;
 
-            Cursor.lockState = CursorLockMode.Locked;
 
 
             //z needs to equal zero on local at all times
@@ -87,16 +93,14 @@ public class HeadTurning : MonoBehaviour
     //   lookLock = true;
     //}
 
-    public void unlockCursor()
+    public void unlockCursor() 
     {
-        cursorLock = false;
-        //Debug.Log("Cursor is locked");
-        //lookLock = false;
+        cursorLockedToCenterScreen = false;
+
     }
 
     public void lockCursor()
     {
-        cursorLock = true;
-        //Debug.Log("Cursor is unlocked");
+        cursorLockedToCenterScreen = true;
     }
 }
