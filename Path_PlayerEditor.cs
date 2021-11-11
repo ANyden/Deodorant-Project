@@ -7,9 +7,10 @@ using UnityEditor;
 [CanEditMultipleObjects]
 public class Path_PlayerEditor : Editor
 {
-    
     public override void OnInspectorGUI()
     {
+        
+
         base.OnInspectorGUI();
 
         Path_Player path = (Path_Player)target;
@@ -25,7 +26,41 @@ public class Path_PlayerEditor : Editor
             path.markB();
         }
         GUILayout.EndHorizontal();
+
+        GUILayout.BeginHorizontal();
+        if (GUILayout.Button("Prev"))
+        {
+            path.prevTarget();
+        }
+        if (GUILayout.Button("Next"))
+        {
+            path.nextTarget();
+        }
+        GUILayout.EndHorizontal();
+        if (GUILayout.Button ("Move to Point A"))
+        {
+            path.moveMarkerA();
+        }
+
+        EditorGUILayout.Space();
+
+        EditorGUILayout.IntSlider("Turn Target", path.turnTarget,0,path.pathLine[path.target].turns.Length - 1);
+        GUILayout.BeginHorizontal();
+        if (GUILayout.Button ("Prev Turn"))
+        {
+            path.prevTurnTarget();
+        }
+        if (GUILayout.Button ("Mark Turn LookAt Point"))
+        {
+            path.markTurn();
+        }
+        if (GUILayout.Button ("Next Turn"))
+        {
+            path.nextTurnTarget();
+        }
+        GUILayout.EndHorizontal();
+
     }
 
-    
+
 }
