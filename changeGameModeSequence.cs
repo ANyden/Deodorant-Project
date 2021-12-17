@@ -73,7 +73,8 @@ public class changeGameModeSequence : MonoBehaviour
         handController.activeInPhase = true;
         keySpawner.activeInPhase = true;
 
-        keySpawner.mouseHeldDown = true;    //for testing
+        //keySpawner.mouseHeldDown = true;    //for testing
+        playerLook.activeInPhase = true;
 
         if (keySpawner.mouseHeldDown)
         {
