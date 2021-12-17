@@ -8,7 +8,7 @@ using InputColumns;
 public class KeyInputSpawner : MonoBehaviour
 {
     public GameObject KeySquarePrefab;
-    private GameObject Player;
+    public GameObject Player;
     private changeGameModeSequence phaseManager;
     public bool startSpawn;
     public bool mouse0Pressed;
@@ -63,14 +63,14 @@ public class KeyInputSpawner : MonoBehaviour
 
     void Update()
     {
-        if (Input.GetKey(KeyCode.LeftShift))
+        if (Input.GetKey(KeyCode.LeftShift))    //Return all notes in use
         {
             for(int i = 0; i < NotesInUse.Count; i++)
             {
                 print(NotesInUse[i].name + NotesInUse[i].placementSection);
             }
         }
-        if (Input.GetKeyDown(KeyCode.LeftControl))
+        if (Input.GetKeyDown(KeyCode.LeftControl))      //Increase difficulty
         {
             if (Difficulty.currentDifficulty < 11)
             {
@@ -109,7 +109,7 @@ public class KeyInputSpawner : MonoBehaviour
 
         //Debug.Log(NotesInUse.Count);
         
-        manualCall();
+        //manualCall();
     }
 
     public void startSpawnfunction()

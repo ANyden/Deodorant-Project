@@ -221,6 +221,11 @@ public class KeyInputBehavior : MonoBehaviour
         {
             SpawnerScript.notesCompletedThisStage++;
         }
+        else
+        {
+            SpawnerScript.Player.GetComponent<Player_MissedNote>().missedNoteTakeDamage();
+        }
+        
         if (!tapKey)
         {
             SpawnerScript.heldNoteOnScreen = false;
