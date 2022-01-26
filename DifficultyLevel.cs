@@ -8,7 +8,6 @@ namespace DifficultyLevel
     [Serializable]
     public class dLev
     {
-        public string name;
         public int level;
         public float movementSpeed;
         public int notesToNextStage;
@@ -18,6 +17,7 @@ namespace DifficultyLevel
         public int tapChance;
         public float refreshRate;
 
+        public bool[] sectionsInUseFlag;
     }
 }
 
