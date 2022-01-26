@@ -1,7 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
+//THIS SCRIPT CHANGES GAME PHASES
 public class changeGameModeSequence : MonoBehaviour
 {
     private HeadTurning playerLook;
@@ -13,24 +13,26 @@ public class changeGameModeSequence : MonoBehaviour
     //public bool beginReadyUpSequence;
     [Range(-1,7)]
     public int gamePhase;
+    private Path_MovePlayer followPaths;
     void Start()
     {
-        //beginReadyUpSequence = false;
+        followPaths = GetComponent<Path_MovePlayer>();
         playerLook = GetComponent<HeadTurning>();
         handController = GetComponent<Hands>();
         raySelector = GetComponent<RaycastSelector>();
         keySpawner = KeyPromptManager.GetComponent<KeyInputSpawner>();
         keyInputInterface = KeyPromptManager.transform.GetChild(0).gameObject;
-    }
 
+        if(gamePhase == -1)
+        {
+            phase_testing();
+
+        }
+
+        playerLook.clampActive = true;
+    }
     void Update()
     {
-        //if (beginReadyUpSequence)
-        //{
-        //    lockMouseControls();
-        //    turnPlayer180();
-        //    beginWalking(); //this will call another script
-        //}
 
         if (Input.GetKeyDown(KeyCode.KeypadPlus))
         {
@@ -41,125 +43,154 @@ public class changeGameModeSequence : MonoBehaviour
             gamePhase--;
         }
 
-        switch (gamePhase)
+        if(gamePhase == -1)
         {
-            case -1:
-                phase_testing();
-                break;
-            case 0:         //At main menu
-                break;
-            case 1:         //walking to shelf
-                break;
-            case 2:         //choosing deoderant
-                phase02_choosing();
-                break;
-            case 3:         //turning around, interface comes on, spawning is clear to start
-                phase03_transition();
-                break;
-            case 4:         //rhythm game while walking
-                phase04_rhythm();
-                break;
-            case 5:         //reset, move player back to shelf
-                break;
-            case 6:         //check out
-                break;
-            case 7:         //ending
-                break;
+            if (Input.GetKeyDown(KeyCode.Return))
+            {
+                keySpawner.startSpawnfunction();
+                Debug.Log("Manually starting spawn");
+            }
         }
+
+        
     }
 
-    void phase_testing()
+    public void phase_testing()
     {
         handController.activeInPhase = true;
         keySpawner.activeInPhase = true;
+        playerLook.activeInPhase = true;
+        raySelector.activeInPhase = true;
+        playerLook.clampActive = false;
+        keyInputInterface.SetActive(true);
 
-        keySpawner.mouseHeldDown = true;    //for testing
+        //keySpawner.mouseHeldDown = true;    //for testing
+        playerLook.activeInPhase = true;
 
-        if (keySpawner.mouseHeldDown)
-        {
-            if (handController.stickRight)
-            {
-                keySpawner.startSpawnfunction();    //starts spawn
-                //gamePhase++;
-            }
-
-        }
-
-        if (!keySpawner.mouseHeldDown)
-        {
-            if (keySpawner.startSpawn)
-            {
-                keySpawner.stopSpawning();
-                //gamePhase++;
-            }
-        }
-
+        //keySpawner.startSpawnfunction();
+        //keySpawner.startSpawn = true;
         
+    }
+    public bool inPhase_01;
+    public void phase01_moveToShelf()
+    {
+        if (!inPhase_01)
+        {
+            followPaths.currentPathNum = 0;
 
+            handController.activeInPhase = false;
+            raySelector.activeInPhase = false;
+            playerLook.activeInPhase = true;
+            playerLook.clampActive = true;          //having this on makes the transition weird.
+
+            followPaths.Run();
+            inPhase_01 = true;
+        }
+        
     }
 
-    void phase02_choosing()
+    public void P01_check()
     {
-        if (keySpawner.mouseHeldDown)
-        {
-            if (handController.stickRight)
-            {
-                keySpawner.startSpawnfunction();    //starts spawn
-                gamePhase++;
-            }
-            
-        }
+        
+        toPhase02();
+        gamePhase++;
+    }
 
+    void toPhase02()
+    {
+        Debug.Log("INITIATING PHASE 2");
+        
+        //followPaths.stop();
+        //followPaths.currentTurn.turnComplete = true;
+        //Move to Phase 2
+        phase02_choosing();
         handController.activeInPhase = true;
         raySelector.activeInPhase = true;
         playerLook.activeInPhase = true;
-
+        playerLook.clampActive = true;
     }
-    public bool p03_ready, p03_start;
-    void phase03_transition()
+
+    bool inPhase_02, inPhase_03;
+    public void phase02_choosing()
     {
-        if (!p03_start)
+        if (inPhase_02)
         {
-
-        }
-        //Head turning is off
-        //Selection Lazer is off
-        //turn player around
-        //turn Key Interface on
-        //
-        handController.activeInPhase = false;   //choice controls get locked (e no longer picks up or drops deoderant)
-        playerLook.activeInPhase = false;       //head turning is off
-        raySelector.activeInPhase = false;      //selection laser is off
-        keyInputInterface.SetActive(true);      //KeyInputColumns are on
-        keySpawner.activeInPhase = true;        //Spawner is ready to activate Spawning IENumerator
-        //do a bunch of stuff then set p03_ready to true;
-
-    }
-
-    IEnumerator p03_setup()
-    {
-        //turn player 180 degrees
-        //turn key Input Interface on
-        yield return null;
-    }
-
-    void phase04_rhythm()
-    {
-        if (!keySpawner.mouseHeldDown)
-        {
-            if (keySpawner.startSpawn)
+            if (handController.stickRight)      //This is where the OCD_Shadow interactions will happen.
             {
-                keySpawner.stopSpawning();
-                gamePhase++;
+                if (keySpawner.mouseHeldDown)
+                {
+                    if (!inPhase_03)
+                    {
+                        gamePhase++;
+                        phase03_transition();
+                        inPhase_03 = true;
+                    }
+                }
             }
         }
         
-        //keyInputInterface.SetActive(true);
-        
+    }
+    void phase03_transition()       //Phase 3 is getting ready. Turn forward, interface appears.
+    {
+        if (inPhase_03)
+        {
+            Debug.Log("Phase 03 starting");
+            followPaths.nextPath();
+            
+            handController.activeInPhase = false;   //choice controls get locked (e no longer picks up or drops deoderant)
+            playerLook.activeInPhase = true;       //head turning is on
+            playerLook.clampActive = false;
+            raySelector.activeInPhase = false;      //selection laser is off
+            keyInputInterface.SetActive(true);      //KeyInputColumns are on
+            keySpawner.activeInPhase = true;        //Spawner is ready to activate Spawning IENumerator
+                                                    //followPaths.currentPathNum++;
+                                                    //followPaths.Run();                  //Starts Movement
 
 
-        //Difficulty manager is on
+
+            //do a bunch of stuff then set p03_ready to true;
+            inPhase_02 = false;
+            inPhase_03 = false;
+        }
+
+    }
+    bool inPhase_04;
+    public void toPhase04()
+    {
+        if (!inPhase_04)
+        {
+            phase04_rhythm();
+
+        }
+    }
+    bool p04_startSpawnFlag = false;
+
+    void phase04_rhythm()
+    {
+        inPhase_04 = true;
+        if (!p04_startSpawnFlag)
+        {
+            keySpawner.startSpawnfunction();    //starts spawn
+            p04_startSpawnFlag = true;
+        }
+
+        if (!keySpawner.mouseHeldDown)
+        {
+            followPaths.missedNote.failState = true;
+            Debug.Log("MOUSE RELEASED. FAILSTATE ACTIVE.");
+        }
+
         //camera walks to designated points.
     }
+
+    void phase05_restart()
+    {
+        if (keySpawner.startSpawn)
+        {
+            keySpawner.stopSpawning();
+        }
+    }
+
+    
 
 }

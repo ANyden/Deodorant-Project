@@ -21,6 +21,7 @@ public class aDEBUGTOOL : MonoBehaviour
     private changeGameModeSequence phaseManager;
     private TMP_Text[] pTextObjects;
     public GameObject mouseInfo;
+    public GameObject healthInfo;
     void Start()
     {
 
@@ -56,6 +57,7 @@ public class aDEBUGTOOL : MonoBehaviour
         keyGraphic();
         phaseTrackerHighlight();
         mouseGraphic();
+        healthTracker();
     }
 
     string inList()             //Shows which input letters are in user
@@ -119,7 +121,7 @@ public class aDEBUGTOOL : MonoBehaviour
     {
         int atSec; atSec = -1;
         //for(int i = 0; i < 5)
-        foreach (bool item in noteSpawner.secInUseBools)
+        foreach (bool item in noteSpawner.addedSec)
         {
             atSec++;
             if (item)
@@ -129,17 +131,6 @@ public class aDEBUGTOOL : MonoBehaviour
             else
             {
                 keyboardInfo.transform.GetChild(atSec).gameObject.SetActive(false);
-            }
-        }
-        for(int i = 0; i < noteSpawner.secInUseBools_Held.Length; i++)
-        {
-            if (noteSpawner.secInUseBools_Held[i])
-            {
-                keyboardInfo.transform.GetChild(i + 5).gameObject.SetActive(true);
-            }
-            else
-            {
-                keyboardInfo.transform.GetChild(i + 5).gameObject.SetActive(false);
             }
         }
     }
@@ -179,6 +170,11 @@ public class aDEBUGTOOL : MonoBehaviour
         {
             mouseBoth.SetActive(false);
         }
+    }
+
+    void healthTracker()
+    {
+        healthInfo.transform.GetChild(0).GetComponent<TMP_Text>().SetText(player.GetComponent<Path_MovePlayer>().modifiedWalkSpeed.ToString());
     }
 
 }

@@ -11,7 +11,7 @@ namespace NoteKey
         public string name;
         public string requiredInput;
         //public Sprite backgroundSprite;
-        public string placementSection;
+        public int placementSection;
         public bool isOnScreen;
     }
 

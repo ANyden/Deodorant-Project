@@ -114,14 +114,15 @@ public class KeyInputBehavior : MonoBehaviour
     {
         if(other.gameObject.name == "SpawnBox")
         {
-            //Debug.Log(gameObject.name + " desiredColumn is " + desiredColumn);
+            Debug.Log(gameObject.name + " desiredColumn is " + desiredColumn);
 
-            //Debug.Log(gameObject.name + " has left the spawnBox");
+            Debug.Log(gameObject.name + " has left the spawnBox");
             //move to one of the 5 columns
             if(SpawnerScript.columnsFreeCount == 0)
             {
                 moving = false;
                 GetComponentInChildren<TMP_Text>().color = Color.red;
+                Debug.LogError("NO COLUMNS ARE FREE");
             }
             else
             {
@@ -199,6 +200,10 @@ public class KeyInputBehavior : MonoBehaviour
             {
                 progress = 0;
             }
+            else
+            {
+
+            }
 
             //if(progress <= SpawnerScript.progNeeded)
             //{
@@ -215,12 +220,17 @@ public class KeyInputBehavior : MonoBehaviour
     {
         Destroy(gameObject);
         SpawnerScript.currentKeyInputsOnScreen--;
-        SpawnerScript.keyInputblocks[keyID].isOnScreen = false;
+        SpawnerScript.NotesList.keysMasterList[keyID].isOnScreen = false;
         SpawnerScript.fingerInputColumns[finalColumn].isFree = true;
         if (progress <= SpawnerScript.progNeeded)
         {
             SpawnerScript.notesCompletedThisStage++;
         }
+        else
+        {
+            SpawnerScript.Player.GetComponent<Player_MissedNote>().missedNoteTakeDamage();
+        }
+        
         if (!tapKey)
         {
             SpawnerScript.heldNoteOnScreen = false;
