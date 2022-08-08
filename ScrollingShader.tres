@@ -1,0 +1,42 @@
+[gd_resource type="Shader" format=2]
+
+[resource]
+code = "shader_type spatial;
+render_mode specular_schlick_ggx;
+
+uniform sampler2D tex_frg_2;
+
+
+
+void vertex() {
+// Output:0
+
+}
+
+uniform float _scrollSpeedX;
+uniform float _scrollSpeedY;
+
+void fragment() {
+	
+	float speedx = TIME * _scrollSpeedX;
+	float speedy = TIME * _scrollSpeedY;
+	vec2 newUV = vec2(UV.x + speedx, UV.y + speedy);
+	
+	
+	
+// Texture:2
+	vec4 tex_frg_2_read = texture(tex_frg_2, newUV.xy);
+	vec3 n_out2p0 = tex_frg_2_read.rgb;
+	float n_out2p1 = tex_frg_2_read.a;
+
+// Output:0
+	ALBEDO = n_out2p0;
+	ALPHA = n_out2p1;
+
+}
+
+void light() {
+// Output:0
+
+}
+"
